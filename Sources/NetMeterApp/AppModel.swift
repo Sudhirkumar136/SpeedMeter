@@ -50,7 +50,12 @@ final class AppModel {
 
     var menuTitle: String {
         guard isMonitoring else { return "⏸ NetMeter" }
-        return MenuBarFormatter.render(
+        let items = menuItems
+        return items.isEmpty ? "NetMeter" : items.map(\.text).joined(separator: " ")
+    }
+
+    var menuItems: [MenuBarMetricText] {
+        MenuBarFormatter.items(
             downloadBytesPerSecond: sample.downloadBytesPerSecond,
             uploadBytesPerSecond: sample.uploadBytesPerSecond,
             totalDownloaded: cumulative.downloaded,

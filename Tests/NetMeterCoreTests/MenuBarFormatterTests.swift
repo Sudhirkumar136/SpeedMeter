@@ -2,6 +2,41 @@ import XCTest
 @testable import NetMeterCore
 
 final class MenuBarFormatterTests: XCTestCase {
+    func testMenuBarKeepsConfiguredDecimalsAsSpeedChanges() {
+        let whole = MenuBarFormatter.render(
+            downloadBytesPerSecond: 2_097_152,
+            uploadBytesPerSecond: 0,
+            totalDownloaded: 0,
+            totalUploaded: 0,
+            configuration: .default
+        )
+        let fractional = MenuBarFormatter.render(
+            downloadBytesPerSecond: 2_621_440,
+            uploadBytesPerSecond: 512,
+            totalDownloaded: 0,
+            totalUploaded: 0,
+            configuration: .default
+        )
+
+        XCTAssertEqual(whole, "↓ 2.0 MB/s ↑ 0.0 B/s")
+        XCTAssertEqual(fractional, "↓ 2.5 MB/s ↑ 512.0 B/s")
+    }
+
+    func testMenuBarKeepsDecimalsForCumulativeMetric() {
+        var configuration = DisplayConfiguration.default
+        configuration.enabled = [.totalUsed]
+
+        let text = MenuBarFormatter.render(
+            downloadBytesPerSecond: 0,
+            uploadBytesPerSecond: 0,
+            totalDownloaded: 1_048_576,
+            totalUploaded: 0,
+            configuration: configuration
+        )
+
+        XCTAssertEqual(text, "Σ 1.0 MB")
+    }
+
     func testDefaultShowsDownloadThenUpload() {
         let text = MenuBarFormatter.render(
             downloadBytesPerSecond: 2_500_000,
@@ -51,7 +86,7 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: configuration
         )
 
-        XCTAssertEqual(text, "↓ 0 B/s")
+        XCTAssertEqual(text, "↓ 0.0 B/s")
         XCTAssertEqual(ByteUnitFormatter.format(1_048_576), "1 MB")
     }
 
@@ -93,6 +128,6 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: configuration
         )
 
-        XCTAssertEqual(text, "D: 1 U: 2")
+        XCTAssertEqual(text, "D: 1.00 U: 2.00")
     }
 }
