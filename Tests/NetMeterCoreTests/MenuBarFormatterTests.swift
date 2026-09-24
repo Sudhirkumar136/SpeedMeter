@@ -2,6 +2,30 @@ import XCTest
 @testable import NetMeterCore
 
 final class MenuBarFormatterTests: XCTestCase {
+    func testThreeSelectedMetricsShareOneStableCompactLabel() {
+        var configuration = DisplayConfiguration.default
+        configuration.enabled = [.downloadSpeed, .uploadSpeed, .totalUsed]
+
+        let whole = MenuBarFormatter.render(
+            downloadBytesPerSecond: 2_097_152,
+            uploadBytesPerSecond: 0,
+            totalDownloaded: 1_048_576,
+            totalUploaded: 0,
+            configuration: configuration
+        )
+        let changing = MenuBarFormatter.render(
+            downloadBytesPerSecond: 2_621_440,
+            uploadBytesPerSecond: 512,
+            totalDownloaded: 1_048_576,
+            totalUploaded: 0,
+            configuration: configuration
+        )
+
+        XCTAssertEqual(whole, "↓   2.0M ↑   0.0B Σ   1.0M")
+        XCTAssertEqual(changing, "↓   2.5M ↑ 512.0B Σ   1.0M")
+        XCTAssertEqual(whole.count, changing.count)
+    }
+
     func testMenuBarKeepsConfiguredDecimalsAsSpeedChanges() {
         let whole = MenuBarFormatter.render(
             downloadBytesPerSecond: 2_097_152,
@@ -18,8 +42,8 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: .default
         )
 
-        XCTAssertEqual(whole, "↓ 2.0 MB/s ↑ 0.0 B/s")
-        XCTAssertEqual(fractional, "↓ 2.5 MB/s ↑ 512.0 B/s")
+        XCTAssertEqual(whole, "↓   2.0M ↑   0.0B")
+        XCTAssertEqual(fractional, "↓   2.5M ↑ 512.0B")
     }
 
     func testMenuBarKeepsDecimalsForCumulativeMetric() {
@@ -34,7 +58,7 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: configuration
         )
 
-        XCTAssertEqual(text, "Σ 1.0 MB")
+        XCTAssertEqual(text, "Σ   1.0M")
     }
 
     func testDefaultShowsDownloadThenUpload() {
@@ -46,7 +70,7 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: .default
         )
 
-        XCTAssertEqual(text, "↓ 2.4 MB/s ↑ 312.5 KB/s")
+        XCTAssertEqual(text, "↓   2.4M ↑ 312.5K")
     }
 
     func testEnabledMetricOrderIsPreserved() {
@@ -66,7 +90,7 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: configuration
         )
 
-        XCTAssertEqual(text, "↑ 312.5 KB/s Σ 1.4 MB")
+        XCTAssertEqual(text, "↑ 312.5K Σ   1.4M")
     }
 
     func testBinaryUnitsAndZeroSpeed() {
@@ -86,7 +110,7 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: configuration
         )
 
-        XCTAssertEqual(text, "↓ 0.0 B/s")
+        XCTAssertEqual(text, "↓   0.0B")
         XCTAssertEqual(ByteUnitFormatter.format(1_048_576), "1 MB")
     }
 
@@ -128,6 +152,6 @@ final class MenuBarFormatterTests: XCTestCase {
             configuration: configuration
         )
 
-        XCTAssertEqual(text, "D: 1.00 U: 2.00")
+        XCTAssertEqual(text, "D:    1.00 U:    2.00")
     }
 }

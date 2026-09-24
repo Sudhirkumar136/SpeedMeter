@@ -108,7 +108,7 @@ public struct DisplayConfiguration: Codable, Equatable, Sendable {
         let validOrder = (order + Metric.allCases).filter { seen.insert($0).inserted }
         return Self(
             order: validOrder,
-            enabled: enabled,
+            enabled: Set(validOrder.filter { enabled.contains($0) }.prefix(3)),
             speedUnit: speedUnit,
             decimalPrecision: min(2, max(0, decimalPrecision)),
             symbolStyle: symbolStyle,

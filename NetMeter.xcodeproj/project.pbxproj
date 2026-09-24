@@ -22,6 +22,7 @@
 		5959DC20355796B1AF8C201F /* InterfaceCounterReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F02E7FE9901900913EA9C8E /* InterfaceCounterReader.swift */; };
 		643B5522423B26011C337089 /* NetMeterCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AFD1941A3F6FD0E0A957D9D /* NetMeterCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		69AD961D5DB420A5FE48F90D /* UsageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3BE9B119B3002CAE2B2FC8 /* UsageStoreTests.swift */; };
+		87BF851A190B9D0866148288 /* DisplayConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ACDF05563306C2418F273B /* DisplayConfigurationTests.swift */; };
 		8E7E05E6ED6EF3796E790B88 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99011321D99DFD2CB044FF66 /* MenuBarView.swift */; };
 		90E44FF324A2273F70790EEF /* SpeedFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49086A904542B81AA78C8D55 /* SpeedFormatterTests.swift */; };
 		9B5824C24C81B022904023CD /* TrafficRateCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A774AC6AED18050262B723D3 /* TrafficRateCalculator.swift */; };
@@ -94,6 +95,7 @@
 		75934620AC3C9D356A1FF96E /* NetMeterCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NetMeterCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E458764E6CABD826117ECE1 /* PreferencesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStore.swift; sourceTree = "<group>"; };
 		808E25C819152BFD8DB76B61 /* TrafficDeltaCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficDeltaCalculator.swift; sourceTree = "<group>"; };
+		84ACDF05563306C2418F273B /* DisplayConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayConfigurationTests.swift; sourceTree = "<group>"; };
 		91740750E12E64F7F91CD037 /* InterfaceCounterReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceCounterReaderTests.swift; sourceTree = "<group>"; };
 		91D0869821582ACF7939F05F /* MenuBarFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFormatter.swift; sourceTree = "<group>"; };
 		934D5D6984373A3DD7673BE9 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 			isa = PBXGroup;
 			children = (
 				0E2CD32EF9FB083D5EF21DEB /* AppSettingsTests.swift */,
+				84ACDF05563306C2418F273B /* DisplayConfigurationTests.swift */,
 				91740750E12E64F7F91CD037 /* InterfaceCounterReaderTests.swift */,
 				E518247751AF7424CFC915B2 /* MenuBarFormatterTests.swift */,
 				EA3C10BC5014EBA671816FC5 /* PreferencesStoreTests.swift */,
@@ -343,6 +346,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C60C501B9E4F4D44A5EF98A /* AppSettingsTests.swift in Sources */,
+				87BF851A190B9D0866148288 /* DisplayConfigurationTests.swift in Sources */,
 				446E71375F08469225C726AC /* InterfaceCounterReaderTests.swift in Sources */,
 				063CF6F183B040185539ECE0 /* MenuBarFormatterTests.swift in Sources */,
 				9FDAC981CCDFE9E98F038645 /* PreferencesStoreTests.swift in Sources */,

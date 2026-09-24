@@ -54,6 +54,17 @@ final class AppModel {
         return items.isEmpty ? "NetMeter" : items.map(\.text).joined(separator: " ")
     }
 
+    var compactMenuTitle: String {
+        guard isMonitoring else { return "⏸ Paused" }
+        return MenuBarFormatter.render(
+            downloadBytesPerSecond: sample.downloadBytesPerSecond,
+            uploadBytesPerSecond: sample.uploadBytesPerSecond,
+            totalDownloaded: cumulative.downloaded,
+            totalUploaded: cumulative.uploaded,
+            configuration: configuration
+        )
+    }
+
     var menuItems: [MenuBarMetricText] {
         MenuBarFormatter.items(
             downloadBytesPerSecond: sample.downloadBytesPerSecond,

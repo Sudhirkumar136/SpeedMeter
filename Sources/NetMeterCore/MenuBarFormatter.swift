@@ -64,14 +64,41 @@ public enum MenuBarFormatter {
         totalUploaded: UInt64,
         configuration: DisplayConfiguration
     ) -> String {
-        let parts = items(
-            downloadBytesPerSecond: downloadBytesPerSecond,
-            uploadBytesPerSecond: uploadBytesPerSecond,
-            totalDownloaded: totalDownloaded,
-            totalUploaded: totalUploaded,
-            configuration: configuration
-        )
-        return parts.isEmpty ? "NetMeter" : parts.map(\.text).joined(separator: " ")
+        let config = configuration.normalized
+        let visible = config.order.filter { config.enabled.contains($0) }
+        guard !visible.isEmpty else { return "NetMeter" }
+        let total = totalDownloaded.addingReportingOverflow(totalUploaded)
+        let totalUsed = total.overflow ? UInt64.max : total.partialValue
+        return visible.map { metric in
+            let prefix: String
+            let value: String
+            switch metric {
+            case .downloadSpeed:
+                prefix = config.symbolStyle.download
+                value = compactSpeed(downloadBytesPerSecond, config)
+            case .uploadSpeed:
+                prefix = config.symbolStyle.upload
+                value = compactSpeed(uploadBytesPerSecond, config)
+            case .totalDownloaded:
+                prefix = "\(config.symbolStyle.download)Σ"
+                value = compactBytes(totalDownloaded, config)
+            case .totalUploaded:
+                prefix = "\(config.symbolStyle.upload)Σ"
+                value = compactBytes(totalUploaded, config)
+            case .totalUsed:
+                prefix = "Σ"
+                value = compactBytes(totalUsed, config)
+            }
+            let padding = max(0, columnWidth(for: metric, config) - prefix.count - value.count)
+            return prefix + String(repeating: " ", count: padding) + value
+        }.joined(separator: " ")
+    }
+
+    public static func reservedCharacterCount(configuration: DisplayConfiguration) -> Int {
+        let config = configuration.normalized
+        let visible = config.order.filter { config.enabled.contains($0) }
+        guard !visible.isEmpty else { return "NetMeter".count }
+        return visible.map { columnWidth(for: $0, config) }.reduce(0, +) + visible.count - 1
     }
 
     public static func items(
@@ -109,5 +136,47 @@ public enum MenuBarFormatter {
     private static func bytes(_ value: UInt64, _ config: DisplayConfiguration) -> String {
         let formatted = ByteUnitFormatter.format(value, decimals: config.decimalPrecision, fixedDecimals: true)
         return config.showUnits ? formatted : String(formatted.prefix(while: { $0 != " " }))
+    }
+
+    private static func compactSpeed(_ value: UInt64, _ config: DisplayConfiguration) -> String {
+        let formatted = SpeedFormatter.format(value, unit: config.speedUnit, decimals: config.decimalPrecision, fixedDecimals: true)
+        let parts = formatted.split(separator: " ", maxSplits: 1)
+        guard let number = parts.first else { return "0" }
+        guard config.showUnits, parts.count == 2 else { return String(number) }
+        let suffix = switch String(parts[1]) {
+        case "B/s": "B"
+        case "KB/s": "K"
+        case "MB/s": "M"
+        case "GB/s": "G"
+        case "TB/s": "T"
+        case "PB/s": "P"
+        case "Mbps": "Mb"
+        case "Gbps": "Gb"
+        default: ""
+        }
+        return number + suffix
+    }
+
+    private static func compactBytes(_ value: UInt64, _ config: DisplayConfiguration) -> String {
+        let formatted = ByteUnitFormatter.format(value, decimals: config.decimalPrecision, fixedDecimals: true)
+        let parts = formatted.split(separator: " ", maxSplits: 1)
+        guard let number = parts.first else { return "0" }
+        guard config.showUnits, parts.count == 2 else { return String(number) }
+        let suffix = String(parts[1].prefix(1))
+        return number + suffix
+    }
+
+    private static func columnWidth(for metric: Metric, _ config: DisplayConfiguration) -> Int {
+        let prefixExtra: Int
+        switch metric {
+        case .downloadSpeed, .totalDownloaded:
+            prefixExtra = config.symbolStyle.download.count - 1
+        case .uploadSpeed, .totalUploaded:
+            prefixExtra = config.symbolStyle.upload.count - 1
+        case .totalUsed:
+            prefixExtra = 0
+        }
+        let totalExtra = metric == .totalDownloaded || metric == .totalUploaded ? 1 : 0
+        return 8 + max(0, config.decimalPrecision - 1) + prefixExtra + totalExtra
     }
 }

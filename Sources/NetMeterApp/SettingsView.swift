@@ -75,7 +75,7 @@ struct SettingsView: View {
     private var menuBarTab: some View {
         Form {
             Section("Visible metrics") {
-                Text("Drag a row to change its position in the menu bar.")
+                Text("Choose up to three metrics. Drag a row to change their order.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 ForEach(model.configuration.order, id: \.self) { metric in
@@ -84,12 +84,15 @@ struct SettingsView: View {
                             get: { model.configuration.enabled.contains(metric) },
                             set: { isEnabled in
                                 if isEnabled {
-                                    model.configuration.enabled.insert(metric)
+                                    if model.configuration.enabled.count < 3 {
+                                        model.configuration.enabled.insert(metric)
+                                    }
                                 } else {
                                     model.configuration.enabled.remove(metric)
                                 }
                             }
                         ))
+                        .disabled(!model.configuration.enabled.contains(metric) && model.configuration.enabled.count >= 3)
                         Spacer()
                         Image(systemName: "line.3.horizontal")
                             .foregroundStyle(.tertiary)

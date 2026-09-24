@@ -10,7 +10,8 @@ NetMeter is a native macOS menu bar app that shows current network download and 
 ## Features
 
 - Download and upload speeds updated every 0.5, 1, 2, or 5 seconds (1 second by default)
-- Five selectable menu bar metrics, with drag and drop ordering
+- Five available menu bar metrics; show up to three at once and drag to change their order
+- A compact, fixed-width menu bar box (for example, `↓   2.4M ↑ 312.5K Σ   1.4G`); in Auto mode, K/M/G abbreviate binary byte units
 - Auto, KB/s, MB/s, Mbps, and Gbps speed units; 0 to 2 decimal places; symbol and unit display options
 - Session and daily download, upload, and total usage
 - Usage Statistics window with Today, Yesterday, Last 7 Days, This Month, Previous Month, a daily list, and a 14-day chart
