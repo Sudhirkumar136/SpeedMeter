@@ -21,6 +21,7 @@
 		54C68943D36662840D3D32BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 355ACB7C442D3CC8F18390F8 /* Assets.xcassets */; };
 		5959DC20355796B1AF8C201F /* InterfaceCounterReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F02E7FE9901900913EA9C8E /* InterfaceCounterReader.swift */; };
 		643B5522423B26011C337089 /* NetMeterCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AFD1941A3F6FD0E0A957D9D /* NetMeterCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		65783FE2D01430382CD45BE3 /* FixedMeterImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FECC499780CCB822210E862F /* FixedMeterImage.swift */; };
 		69AD961D5DB420A5FE48F90D /* UsageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF3BE9B119B3002CAE2B2FC8 /* UsageStoreTests.swift */; };
 		87BF851A190B9D0866148288 /* DisplayConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ACDF05563306C2418F273B /* DisplayConfigurationTests.swift */; };
 		8E7E05E6ED6EF3796E790B88 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99011321D99DFD2CB044FF66 /* MenuBarView.swift */; };
@@ -111,6 +112,7 @@
 		E9A8CAB83E0667F754C319BF /* NetMeter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NetMeter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3C10BC5014EBA671816FC5 /* PreferencesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesStoreTests.swift; sourceTree = "<group>"; };
 		F71289D51C3201E77E20F6C1 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
+		FECC499780CCB822210E862F /* FixedMeterImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixedMeterImage.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				F71289D51C3201E77E20F6C1 /* AppModel.swift */,
+				FECC499780CCB822210E862F /* FixedMeterImage.swift */,
 				99011321D99DFD2CB044FF66 /* MenuBarView.swift */,
 				0B06395C705207BF66B84A39 /* NetMeterApp.swift */,
 				2877E5DBB200909F88D625A5 /* NetworkMonitor.swift */,
@@ -363,6 +366,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9E428E8C62A08A4A0B54D435 /* AppModel.swift in Sources */,
+				65783FE2D01430382CD45BE3 /* FixedMeterImage.swift in Sources */,
 				8E7E05E6ED6EF3796E790B88 /* MenuBarView.swift in Sources */,
 				CFF8CB85117A8CB7E3FE4053 /* NetMeterApp.swift in Sources */,
 				150D5A7072CADDAEDC0F906C /* NetworkMonitor.swift in Sources */,
