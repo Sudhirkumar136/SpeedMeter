@@ -93,11 +93,6 @@ struct SettingsView: View {
 
     private var menuBarTab: some View {
         Form {
-            Section("Font Style") {
-                Button("Edit download and upload font style…") {
-                    model.settingsTab = .fontStyle
-                }
-            }
             Section("Visible metrics") {
                 Text("Choose up to three metrics. Drag a row to change their order.")
                     .font(.caption)

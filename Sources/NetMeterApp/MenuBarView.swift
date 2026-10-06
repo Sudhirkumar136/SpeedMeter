@@ -31,18 +31,8 @@ struct MenuBarView: View {
             Divider()
 
             VStack(spacing: 2) {
-                action("Usage Statistics", systemImage: "chart.bar.xaxis") {
-                    model.settingsTab = .statistics
-                    NSApp.activate(ignoringOtherApps: true)
-                    openSettings()
-                }
                 action("Settings…", systemImage: "gearshape") {
                     model.settingsTab = .general
-                    NSApp.activate(ignoringOtherApps: true)
-                    openSettings()
-                }
-                action("Font Style…", systemImage: "textformat") {
-                    model.settingsTab = .fontStyle
                     NSApp.activate(ignoringOtherApps: true)
                     openSettings()
                 }
