@@ -7,15 +7,16 @@ struct UsageStatisticsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 16) {
                 Text("Usage Statistics")
-                    .font(.largeTitle.bold())
+                    .font(.title2.bold())
 
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
                     summaryCard(.today)
                     summaryCard(.yesterday)
                     summaryCard(.lastSevenDays)
                     summaryCard(.thisMonth)
+                    summaryCard(.previousMonth)
                 }
 
                 GroupBox("Daily usage") {
@@ -37,7 +38,7 @@ struct UsageStatisticsView: View {
                                 .foregroundStyle(by: .value("Direction", "Upload"))
                             }
                         }
-                        .frame(height: 220)
+                        .frame(height: 180)
                         .padding(.top, 8)
                     }
                 }
@@ -51,13 +52,20 @@ struct UsageStatisticsView: View {
                     } else {
                         LazyVStack(spacing: 0) {
                             ForEach(model.ledger.dailyRows) { row in
-                                HStack {
-                                    Text(row.day).fontWeight(.medium)
-                                    Spacer()
-                                    Text("↓ \(ByteUnitFormatter.format(row.totals.downloaded))")
-                                    Text("↑ \(ByteUnitFormatter.format(row.totals.uploaded))")
-                                    Text("Total \(ByteUnitFormatter.format(row.totals.total))")
-                                        .fontWeight(.semibold)
+                                VStack(spacing: 4) {
+                                    HStack {
+                                        Text(row.day).fontWeight(.medium)
+                                        Spacer()
+                                        Text("Total \(ByteUnitFormatter.format(row.totals.total))")
+                                            .fontWeight(.semibold)
+                                    }
+                                    HStack {
+                                        Text("↓ \(ByteUnitFormatter.format(row.totals.downloaded))")
+                                        Spacer()
+                                        Text("↑ \(ByteUnitFormatter.format(row.totals.uploaded))")
+                                    }
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                                 }
                                 .monospacedDigit()
                                 .padding(.vertical, 8)
@@ -67,7 +75,7 @@ struct UsageStatisticsView: View {
                     }
                 }
             }
-            .padding(24)
+            .padding(16)
         }
     }
 

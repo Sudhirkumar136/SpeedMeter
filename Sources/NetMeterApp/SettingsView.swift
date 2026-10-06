@@ -17,6 +17,9 @@ struct SettingsView: View {
             usageTab
                 .tabItem { Label("Usage", systemImage: "chart.bar") }
                 .tag(SettingsTab.usage)
+            UsageStatisticsView(model: model)
+                .tabItem { Label("Statistics", systemImage: "chart.bar.xaxis") }
+                .tag(SettingsTab.statistics)
             advancedTab
                 .tabItem { Label("Advanced", systemImage: "network") }
                 .tag(SettingsTab.advanced)

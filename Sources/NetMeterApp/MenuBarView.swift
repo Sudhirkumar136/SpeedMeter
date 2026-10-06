@@ -5,7 +5,6 @@ import SwiftUI
 struct MenuBarView: View {
     let model: AppModel
     @Environment(\.openSettings) private var openSettings
-    @Environment(\.openWindow) private var openWindow
     @State private var confirmResetSession = false
 
     var body: some View {
@@ -33,8 +32,9 @@ struct MenuBarView: View {
 
             VStack(spacing: 2) {
                 action("Usage Statistics", systemImage: "chart.bar.xaxis") {
+                    model.settingsTab = .statistics
                     NSApp.activate(ignoringOtherApps: true)
-                    openWindow(id: "usage-statistics")
+                    openSettings()
                 }
                 action("Settings…", systemImage: "gearshape") {
                     model.settingsTab = .general

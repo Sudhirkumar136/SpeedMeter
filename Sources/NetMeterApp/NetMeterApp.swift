@@ -16,10 +16,5 @@ struct NetMeterApp: App {
         Settings {
             SettingsView(model: model)
         }
-
-        Window("Usage Statistics", id: "usage-statistics") {
-            UsageStatisticsView(model: model)
-        }
-        .defaultSize(width: 720, height: 620)
     }
 }

@@ -7,6 +7,7 @@ enum SettingsTab: Hashable {
     case general
     case menuBar
     case usage
+    case statistics
     case advanced
     case about
 }
