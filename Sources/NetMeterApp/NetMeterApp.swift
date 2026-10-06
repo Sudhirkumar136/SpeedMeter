@@ -8,7 +8,11 @@ struct NetMeterApp: App {
         MenuBarExtra {
             MenuBarView(model: model)
         } label: {
-            Image(nsImage: FixedMeterImage.make(title: model.compactMenuTitle, configuration: model.configuration))
+            Image(nsImage: FixedMeterImage.make(
+                title: model.compactMenuTitle,
+                columns: model.compactMenuColumns,
+                configuration: model.configuration
+            ))
                 .accessibilityLabel("NetMeter network usage: \(model.menuTitle)")
         }
         .menuBarExtraStyle(.window)

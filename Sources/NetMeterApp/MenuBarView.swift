@@ -56,7 +56,7 @@ struct MenuBarView: View {
                     model.quit()
                 }
             }
-            if let error = model.errorMessage {
+            if let error = model.storageErrorMessage ?? model.errorMessage ?? model.monitoringErrorMessage {
                 Text(error)
                     .font(.caption)
                     .foregroundStyle(.red)

@@ -2,6 +2,34 @@ import XCTest
 @testable import NetMeterCore
 
 final class MenuBarFormatterTests: XCTestCase {
+    func testCompactColumnsRetainMetricIdentityAndStableWidths() {
+        var configuration = DisplayConfiguration.default
+        configuration.enabled = [.downloadSpeed, .uploadSpeed, .totalUsed]
+        let slow = MenuBarFormatter.columns(
+            downloadBytesPerSecond: 1_024,
+            uploadBytesPerSecond: 100_000,
+            totalDownloaded: 2_000,
+            totalUploaded: 3_000,
+            configuration: configuration
+        )
+        let fast = MenuBarFormatter.columns(
+            downloadBytesPerSecond: 1_000_000,
+            uploadBytesPerSecond: 1_024,
+            totalDownloaded: 2_000,
+            totalUploaded: 3_000,
+            configuration: configuration
+        )
+
+        XCTAssertEqual(slow.map(\.metric), [.downloadSpeed, .uploadSpeed, .totalUsed])
+        XCTAssertEqual(slow.map(\.characterWidth), fast.map(\.characterWidth))
+        XCTAssertEqual(slow.map(\.text).joined(separator: " "), MenuBarFormatter.render(
+            downloadBytesPerSecond: 1_024,
+            uploadBytesPerSecond: 100_000,
+            totalDownloaded: 2_000,
+            totalUploaded: 3_000,
+            configuration: configuration
+        ))
+    }
     func testThreeSelectedMetricsShareOneStableCompactLabel() {
         var configuration = DisplayConfiguration.default
         configuration.enabled = [.downloadSpeed, .uploadSpeed, .totalUsed]

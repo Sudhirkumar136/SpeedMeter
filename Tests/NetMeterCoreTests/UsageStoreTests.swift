@@ -17,11 +17,19 @@ final class UsageStoreTests: XCTestCase {
     }
 
     func testCorruptFileLoadsEmptyLedger() async throws {
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        defer { try? FileManager.default.removeItem(at: url) }
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let url = folder.appendingPathComponent("usage.json")
         try Data("not json".utf8).write(to: url)
 
-        let loaded = await UsageStore(url: url).load()
+        let store = UsageStore(url: url)
+        let loaded = await store.load()
+        let recovered = await store.recoveredCorruptFileURL
+
         XCTAssertEqual(loaded, UsageLedger())
+        XCTAssertFalse(FileManager.default.fileExists(atPath: url.path))
+        let backup = try XCTUnwrap(recovered)
+        XCTAssertEqual(try Data(contentsOf: backup), Data("not json".utf8))
     }
 }

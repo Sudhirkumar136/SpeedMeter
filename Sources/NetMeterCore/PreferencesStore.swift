@@ -29,6 +29,7 @@ public final class PreferencesStore {
     private let configurationKey = "displayConfiguration"
     private let totalsKey = "trafficTotals"
     private let settingsKey = "appSettings"
+    private let launchAtLoginRequestedKey = "launchAtLoginRequested"
 
     public init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -68,5 +69,13 @@ public final class PreferencesStore {
     public func save(settings: AppSettings) {
         guard let data = try? JSONEncoder().encode(settings.normalized) else { return }
         defaults.set(data, forKey: settingsKey)
+    }
+
+    public func loadLaunchAtLoginRequested() -> Bool {
+        defaults.object(forKey: launchAtLoginRequestedKey) as? Bool ?? true
+    }
+
+    public func saveLaunchAtLoginRequested(_ requested: Bool) {
+        defaults.set(requested, forKey: launchAtLoginRequestedKey)
     }
 }

@@ -32,7 +32,11 @@ final class AppModel {
     private(set) var interfaces: [InterfaceCounter] = []
     private(set) var isMonitoring = false
     private(set) var launchAtLogin = false
+    private(set) var launchAtLoginRequested = true
+    private(set) var launchAtLoginNeedsApproval = false
     var errorMessage: String?
+    var storageErrorMessage: String?
+    private(set) var monitoringErrorMessage: String?
 
     @ObservationIgnored
     private let preferences: PreferencesStore
@@ -48,6 +52,8 @@ final class AppModel {
     private var ticksSinceSave = 0
     @ObservationIgnored
     private var resumeAfterWake = false
+    @ObservationIgnored
+    private var loginPromptShown = false
 
     var menuTitle: String {
         guard isMonitoring else { return "⏸ NetMeter" }
@@ -58,6 +64,17 @@ final class AppModel {
     var compactMenuTitle: String {
         guard isMonitoring else { return "⏸ Paused" }
         return MenuBarFormatter.render(
+            downloadBytesPerSecond: sample.downloadBytesPerSecond,
+            uploadBytesPerSecond: sample.uploadBytesPerSecond,
+            totalDownloaded: cumulative.downloaded,
+            totalUploaded: cumulative.uploaded,
+            configuration: configuration
+        )
+    }
+
+    var compactMenuColumns: [MenuBarColumn] {
+        guard isMonitoring else { return [] }
+        return MenuBarFormatter.columns(
             downloadBytesPerSecond: sample.downloadBytesPerSecond,
             uploadBytesPerSecond: sample.uploadBytesPerSecond,
             totalDownloaded: cumulative.downloaded,
@@ -81,7 +98,9 @@ final class AppModel {
         self.configuration = preferences.loadConfiguration()
         self.settings = preferences.loadSettings()
         self.cumulative = preferences.loadTotals()
+        self.launchAtLoginRequested = preferences.loadLaunchAtLoginRequested()
         self.launchAtLogin = SMAppService.mainApp.status == .enabled
+        self.launchAtLoginNeedsApproval = SMAppService.mainApp.status == .requiresApproval
 
         NSWorkspace.shared.notificationCenter.addObserver(
             self,
@@ -95,13 +114,23 @@ final class AppModel {
             name: NSWorkspace.didWakeNotification,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(refreshLaunchAtLoginStatus),
+            name: NSApplication.didBecomeActiveNotification,
+            object: nil
+        )
         Task { [weak self] in
             await self?.loadUsageAndStart()
+            await self?.configureLaunchAtLogin()
         }
     }
 
     private func loadUsageAndStart() async {
         ledger = await usageStore.load()
+        if let recovered = await usageStore.recoveredCorruptFileURL {
+            errorMessage = "An unreadable usage file was preserved at \(recovered.path). A new history has started."
+        }
         if settings.startMonitoringAutomatically { startMonitoring() }
     }
 
@@ -117,10 +146,10 @@ final class AppModel {
                     let reading = try await monitor.read(settings: currentSettings)
                     if Task.isCancelled { break }
                     self.apply(reading)
-                    self.errorMessage = nil
+                    self.monitoringErrorMessage = nil
                 } catch {
                     self.sample = .zero
-                    self.errorMessage = "Network statistics unavailable: \(error.localizedDescription)"
+                    self.monitoringErrorMessage = "Network statistics unavailable: \(error.localizedDescription)"
                 }
                 try? await Task.sleep(for: .seconds(currentSettings.updateInterval))
             }
@@ -199,27 +228,93 @@ final class AppModel {
     }
 
     func setLaunchAtLogin(_ enabled: Bool) {
+        if enabled && SMAppService.mainApp.status == .notFound {
+            errorMessage = "macOS could not find NetMeter as a login item. Reinstall the app in Applications and try again."
+            return
+        }
         do {
             if enabled {
-                try SMAppService.mainApp.register()
+                if SMAppService.mainApp.status == .notRegistered {
+                    try SMAppService.mainApp.register()
+                }
             } else {
-                try SMAppService.mainApp.unregister()
+                if SMAppService.mainApp.status != .notRegistered {
+                    try SMAppService.mainApp.unregister()
+                }
             }
+            preferences.saveLaunchAtLoginRequested(enabled)
+            launchAtLoginRequested = enabled
         } catch {
             errorMessage = "Could not change Launch at Login: \(error.localizedDescription)"
         }
-        launchAtLogin = SMAppService.mainApp.status == .enabled
+        refreshLaunchAtLoginStatus()
+        if enabled && launchAtLoginNeedsApproval {
+            SMAppService.openSystemSettingsLoginItems()
+        }
+    }
+
+    @objc func refreshLaunchAtLoginStatus() {
+        let status = SMAppService.mainApp.status
+        launchAtLogin = status == .enabled
+        launchAtLoginNeedsApproval = status == .requiresApproval
+    }
+
+    private func configureLaunchAtLogin() async {
+        guard launchAtLoginRequested else { return }
+        if SMAppService.mainApp.status == .notFound {
+            errorMessage = "macOS could not find NetMeter as a login item. Reinstall the app in Applications and try again."
+            return
+        }
+        if SMAppService.mainApp.status == .notRegistered {
+            do {
+                try SMAppService.mainApp.register()
+            } catch {
+                errorMessage = "Could not enable Launch at Login: \(error.localizedDescription)"
+            }
+        }
+        refreshLaunchAtLoginStatus()
+        guard launchAtLoginNeedsApproval, !loginPromptShown else { return }
+        loginPromptShown = true
+        try? await Task.sleep(for: .milliseconds(700))
+        let alert = NSAlert()
+        alert.messageText = "Allow NetMeter to launch at login"
+        alert.informativeText = "macOS needs your approval before NetMeter can start automatically. Turn on NetMeter in System Settings → General → Login Items."
+        alert.addButton(withTitle: "Open Login Items")
+        alert.addButton(withTitle: "Later")
+        NSApp.activate(ignoringOtherApps: true)
+        if alert.runModal() == .alertFirstButtonReturn {
+            SMAppService.openSystemSettingsLoginItems()
+        }
     }
 
     func quit() {
         monitoringTask?.cancel()
+        monitoringTask = nil
+        isMonitoring = false
+        sample = .zero
         preferences.save(totals: cumulative)
         let previousSave = usageSaveTask
         let snapshot = ledger
-        Task {
+        let store = usageStore
+        Task { [weak self] in
             await previousSave?.value
-            try? await usageStore.save(snapshot)
-            NSApp.terminate(nil)
+            do {
+                try await store.save(snapshot)
+                NSApp.terminate(nil)
+            } catch {
+                self?.storageErrorMessage = "Could not save usage history: \(error.localizedDescription)"
+                let alert = NSAlert()
+                alert.messageText = "Usage history could not be saved"
+                alert.informativeText = "\(error.localizedDescription)\n\nYou can keep NetMeter open and try again after fixing the storage problem."
+                alert.addButton(withTitle: "Keep Running")
+                alert.addButton(withTitle: "Quit Without Saving")
+                NSApp.activate(ignoringOtherApps: true)
+                if alert.runModal() == .alertSecondButtonReturn {
+                    NSApp.terminate(nil)
+                } else {
+                    self?.startMonitoring()
+                }
+            }
         }
     }
 
@@ -227,9 +322,15 @@ final class AppModel {
         preferences.save(totals: cumulative)
         let snapshot = ledger
         let previousSave = usageSaveTask
-        usageSaveTask = Task {
+        let store = usageStore
+        usageSaveTask = Task { [weak self] in
             await previousSave?.value
-            try? await usageStore.save(snapshot)
+            do {
+                try await store.save(snapshot)
+                self?.storageErrorMessage = nil
+            } catch {
+                self?.storageErrorMessage = "Could not save usage history: \(error.localizedDescription)"
+            }
         }
     }
 

@@ -70,6 +70,22 @@ public enum SymbolStyle: String, CaseIterable, Codable, Sendable {
     }
 }
 
+public enum MenuBarFontWeight: String, CaseIterable, Codable, Sendable {
+    case regular
+    case medium
+    case semibold
+    case bold
+
+    public var title: String {
+        switch self {
+        case .regular: "Regular"
+        case .medium: "Medium"
+        case .semibold: "Semibold"
+        case .bold: "Bold"
+        }
+    }
+}
+
 public struct DisplayConfiguration: Codable, Equatable, Sendable {
     public var order: [Metric]
     public var enabled: Set<Metric>
@@ -77,6 +93,9 @@ public struct DisplayConfiguration: Codable, Equatable, Sendable {
     public var decimalPrecision: Int
     public var symbolStyle: SymbolStyle
     public var showUnits: Bool
+    public var menuBarFontSize: Int
+    public var downloadFontWeight: MenuBarFontWeight
+    public var uploadFontWeight: MenuBarFontWeight
 
     public init(
         order: [Metric],
@@ -84,7 +103,10 @@ public struct DisplayConfiguration: Codable, Equatable, Sendable {
         speedUnit: SpeedUnit,
         decimalPrecision: Int,
         symbolStyle: SymbolStyle,
-        showUnits: Bool
+        showUnits: Bool,
+        menuBarFontSize: Int = 12,
+        downloadFontWeight: MenuBarFontWeight = .regular,
+        uploadFontWeight: MenuBarFontWeight = .regular
     ) {
         self.order = order
         self.enabled = enabled
@@ -92,6 +114,9 @@ public struct DisplayConfiguration: Codable, Equatable, Sendable {
         self.decimalPrecision = decimalPrecision
         self.symbolStyle = symbolStyle
         self.showUnits = showUnits
+        self.menuBarFontSize = menuBarFontSize
+        self.downloadFontWeight = downloadFontWeight
+        self.uploadFontWeight = uploadFontWeight
     }
 
     public static let `default` = DisplayConfiguration(
@@ -100,7 +125,10 @@ public struct DisplayConfiguration: Codable, Equatable, Sendable {
         speedUnit: .auto,
         decimalPrecision: 1,
         symbolStyle: .arrows,
-        showUnits: true
+        showUnits: true,
+        menuBarFontSize: 12,
+        downloadFontWeight: .regular,
+        uploadFontWeight: .regular
     )
 
     public var normalized: Self {
@@ -112,7 +140,30 @@ public struct DisplayConfiguration: Codable, Equatable, Sendable {
             speedUnit: speedUnit,
             decimalPrecision: min(2, max(0, decimalPrecision)),
             symbolStyle: symbolStyle,
-            showUnits: showUnits
+            showUnits: showUnits,
+            menuBarFontSize: min(14, max(10, menuBarFontSize)),
+            downloadFontWeight: downloadFontWeight,
+            uploadFontWeight: uploadFontWeight
+        )
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case order, enabled, speedUnit, decimalPrecision, symbolStyle, showUnits
+        case menuBarFontSize, downloadFontWeight, uploadFontWeight
+    }
+
+    public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        self.init(
+            order: try values.decode([Metric].self, forKey: .order),
+            enabled: try values.decode(Set<Metric>.self, forKey: .enabled),
+            speedUnit: try values.decode(SpeedUnit.self, forKey: .speedUnit),
+            decimalPrecision: try values.decode(Int.self, forKey: .decimalPrecision),
+            symbolStyle: try values.decode(SymbolStyle.self, forKey: .symbolStyle),
+            showUnits: try values.decode(Bool.self, forKey: .showUnits),
+            menuBarFontSize: try values.decodeIfPresent(Int.self, forKey: .menuBarFontSize) ?? 12,
+            downloadFontWeight: try values.decodeIfPresent(MenuBarFontWeight.self, forKey: .downloadFontWeight) ?? .regular,
+            uploadFontWeight: try values.decodeIfPresent(MenuBarFontWeight.self, forKey: .uploadFontWeight) ?? .regular
         )
     }
 }

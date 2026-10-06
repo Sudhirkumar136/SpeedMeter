@@ -13,7 +13,10 @@ final class PreferencesStoreTests: XCTestCase {
             speedUnit: .megabytes,
             decimalPrecision: 2,
             symbolStyle: .thinArrows,
-            showUnits: false
+            showUnits: false,
+            menuBarFontSize: 14,
+            downloadFontWeight: .bold,
+            uploadFontWeight: .semibold
         )
 
         let writer = PreferencesStore(defaults: defaults)
@@ -42,5 +45,16 @@ final class PreferencesStoreTests: XCTestCase {
         XCTAssertEqual(totals.downloaded, UInt64.max)
         XCTAssertEqual(totals.uploaded, UInt64.max)
         XCTAssertEqual(totals.total, UInt64.max)
+    }
+
+    func testLaunchAtLoginPreferenceDefaultsOnAndPersistsOptOut() {
+        let suiteName = "NetMeterTests.\(UUID().uuidString)"
+        let defaults = UserDefaults(suiteName: suiteName)!
+        defer { defaults.removePersistentDomain(forName: suiteName) }
+        let store = PreferencesStore(defaults: defaults)
+
+        XCTAssertTrue(store.loadLaunchAtLoginRequested())
+        store.saveLaunchAtLoginRequested(false)
+        XCTAssertFalse(PreferencesStore(defaults: defaults).loadLaunchAtLoginRequested())
     }
 }

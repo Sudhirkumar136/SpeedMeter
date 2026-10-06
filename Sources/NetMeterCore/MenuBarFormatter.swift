@@ -56,6 +56,14 @@ public struct MenuBarMetricText: Identifiable, Sendable {
     public var id: Metric { metric }
 }
 
+public struct MenuBarColumn: Identifiable, Sendable {
+    public let metric: Metric
+    public let text: String
+    public let characterWidth: Int
+
+    public var id: Metric { metric }
+}
+
 public enum MenuBarFormatter {
     public static func render(
         downloadBytesPerSecond: UInt64,
@@ -64,9 +72,25 @@ public enum MenuBarFormatter {
         totalUploaded: UInt64,
         configuration: DisplayConfiguration
     ) -> String {
+        let columns = columns(
+            downloadBytesPerSecond: downloadBytesPerSecond,
+            uploadBytesPerSecond: uploadBytesPerSecond,
+            totalDownloaded: totalDownloaded,
+            totalUploaded: totalUploaded,
+            configuration: configuration
+        )
+        return columns.isEmpty ? "NetMeter" : columns.map(\.text).joined(separator: " ")
+    }
+
+    public static func columns(
+        downloadBytesPerSecond: UInt64,
+        uploadBytesPerSecond: UInt64,
+        totalDownloaded: UInt64,
+        totalUploaded: UInt64,
+        configuration: DisplayConfiguration
+    ) -> [MenuBarColumn] {
         let config = configuration.normalized
         let visible = config.order.filter { config.enabled.contains($0) }
-        guard !visible.isEmpty else { return "NetMeter" }
         let total = totalDownloaded.addingReportingOverflow(totalUploaded)
         let totalUsed = total.overflow ? UInt64.max : total.partialValue
         return visible.map { metric in
@@ -89,9 +113,14 @@ public enum MenuBarFormatter {
                 prefix = "Σ"
                 value = compactBytes(totalUsed, config)
             }
-            let padding = max(0, columnWidth(for: metric, config) - prefix.count - value.count)
-            return prefix + String(repeating: " ", count: padding) + value
-        }.joined(separator: " ")
+            let width = columnWidth(for: metric, config)
+            let padding = max(0, width - prefix.count - value.count)
+            return MenuBarColumn(
+                metric: metric,
+                text: prefix + String(repeating: " ", count: padding) + value,
+                characterWidth: width
+            )
+        }
     }
 
     public static func reservedCharacterCount(configuration: DisplayConfiguration) -> Int {

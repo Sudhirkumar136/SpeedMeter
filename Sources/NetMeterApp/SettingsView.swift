@@ -1,4 +1,6 @@
+import AppKit
 import NetMeterCore
+import ServiceManagement
 import SwiftUI
 
 struct SettingsView: View {
@@ -27,7 +29,7 @@ struct SettingsView: View {
                 .tabItem { Label("About", systemImage: "info.circle") }
                 .tag(SettingsTab.about)
         }
-        .frame(width: 560, height: 460)
+        .frame(width: 640, height: 560)
         .alert("Reset today's statistics?", isPresented: $confirmResetToday) {
             Button("Reset Today", role: .destructive) { model.resetToday() }
             Button("Cancel", role: .cancel) {}
@@ -41,12 +43,12 @@ struct SettingsView: View {
             Text("All saved daily usage and the current session totals will be cleared.")
         }
         .alert("NetMeter", isPresented: Binding(
-            get: { model.errorMessage != nil },
-            set: { if !$0 { model.errorMessage = nil } }
+            get: { model.storageErrorMessage != nil || model.errorMessage != nil },
+            set: { if !$0 { model.storageErrorMessage = nil; model.errorMessage = nil } }
         )) {
-            Button("OK") { model.errorMessage = nil }
+            Button("OK") { model.storageErrorMessage = nil; model.errorMessage = nil }
         } message: {
-            Text(model.errorMessage ?? "")
+            Text(model.storageErrorMessage ?? model.errorMessage ?? "")
         }
     }
 
@@ -54,9 +56,20 @@ struct SettingsView: View {
         Form {
             Section("Startup") {
                 Toggle("Launch NetMeter at login", isOn: Binding(
-                    get: { model.launchAtLogin },
+                    get: { model.launchAtLoginRequested },
                     set: { model.setLaunchAtLogin($0) }
                 ))
+                if model.launchAtLoginRequested && model.launchAtLoginNeedsApproval {
+                    LabeledContent("Status") {
+                        Button("Approve in System Settings…") {
+                            SMAppService.openSystemSettingsLoginItems()
+                        }
+                    }
+                } else if model.launchAtLogin {
+                    Text("NetMeter starts when you log in.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 Toggle("Start monitoring automatically", isOn: $model.settings.startMonitoringAutomatically)
             }
             Section("Monitoring") {
@@ -129,6 +142,33 @@ struct SettingsView: View {
                 }
                 Toggle("Show units", isOn: $model.configuration.showUnits)
             }
+            Section("Menu bar font") {
+                Picker("Size", selection: $model.configuration.menuBarFontSize) {
+                    ForEach(10...14, id: \.self) { size in
+                        Text("\(size) pt").tag(size)
+                    }
+                }
+                Picker("Download weight", selection: $model.configuration.downloadFontWeight) {
+                    ForEach(MenuBarFontWeight.allCases, id: \.self) { weight in
+                        Text(weight.title).tag(weight)
+                    }
+                }
+                Picker("Upload weight", selection: $model.configuration.uploadFontWeight) {
+                    ForEach(MenuBarFontWeight.allCases, id: \.self) { weight in
+                        Text(weight.title).tag(weight)
+                    }
+                }
+                HStack {
+                    Text("Preview")
+                    Spacer()
+                    Image(nsImage: FixedMeterImage.make(
+                        title: model.compactMenuTitle,
+                        columns: model.compactMenuColumns,
+                        configuration: model.configuration
+                    ))
+                    .accessibilityLabel(model.menuTitle)
+                }
+            }
         }
         .formStyle(.grouped)
     }
@@ -194,6 +234,15 @@ struct SettingsView: View {
                     }
                 }
             }
+            Section("Stored data") {
+                LabeledContent("Usage history", value: "~/Library/Application Support/NetMeter/usage.json")
+                Text("Display and app settings are saved in your macOS Library preferences.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button("Show usage data in Finder") {
+                    NSWorkspace.shared.activateFileViewerSelecting([UsageStore.defaultURL])
+                }
+            }
         }
         .formStyle(.grouped)
     }
@@ -204,7 +253,7 @@ struct SettingsView: View {
                 .font(.system(size: 56))
                 .foregroundStyle(.tint)
             Text("NetMeter").font(.title.bold())
-            Text("Version 1.0.0")
+            Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—")")
                 .foregroundStyle(.secondary)
             Text("A lightweight, native network speed and usage monitor for the macOS menu bar.")
                 .multilineTextAlignment(.center)

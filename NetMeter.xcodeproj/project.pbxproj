@@ -33,11 +33,14 @@
 		BC61E071005CB4E2EA971253 /* NetMeterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AFD1941A3F6FD0E0A957D9D /* NetMeterCore.framework */; };
 		BCB83603F11697E4CA62BD0A /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934D5D6984373A3DD7673BE9 /* AppSettings.swift */; };
 		C0E1DFBA877A2165F5AE949C /* TrafficRateCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6614D429C39724EE86903CE9 /* TrafficRateCalculatorTests.swift */; };
+		CC762300926E2A87159420BA /* UsageCSVExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEBE037F349A21B7061283DB /* UsageCSVExporterTests.swift */; };
 		CCD3A45340EE608D83876F65 /* UsageLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB6ACE7245F30542AD9D734 /* UsageLedger.swift */; };
 		CF6F4C3ED3CEC4120029104A /* PreferencesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E458764E6CABD826117ECE1 /* PreferencesStore.swift */; };
 		CFF8CB85117A8CB7E3FE4053 /* NetMeterApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B06395C705207BF66B84A39 /* NetMeterApp.swift */; };
 		D5092577A66702FE13FA96A1 /* DisplayConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = E7DE727077C6511B3A29398D /* DisplayConfiguration.swift */; };
 		D6F3BB84C51C87142A029016 /* UsageLedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3385F0E0B65BAECD26C9B42 /* UsageLedgerTests.swift */; };
+		D974FA88BC97AE7166D77BC0 /* UsageCSVDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2073C952D9862C51969997DC /* UsageCSVDocument.swift */; };
+		E9092F19DB4FC94EC509381D /* UsageCSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 254B729A7EA2194EEF770D79 /* UsageCSVExporter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +89,8 @@
 		0B06395C705207BF66B84A39 /* NetMeterApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetMeterApp.swift; sourceTree = "<group>"; };
 		0E2CD32EF9FB083D5EF21DEB /* AppSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsTests.swift; sourceTree = "<group>"; };
 		0F02E7FE9901900913EA9C8E /* InterfaceCounterReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceCounterReader.swift; sourceTree = "<group>"; };
+		2073C952D9862C51969997DC /* UsageCSVDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageCSVDocument.swift; sourceTree = "<group>"; };
+		254B729A7EA2194EEF770D79 /* UsageCSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageCSVExporter.swift; sourceTree = "<group>"; };
 		2877E5DBB200909F88D625A5 /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		2A73BEDA2D60400415B0F67F /* UsageStatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStatisticsView.swift; sourceTree = "<group>"; };
 		355ACB7C442D3CC8F18390F8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -105,6 +110,7 @@
 		A35963028476ECBA22D43229 /* UsageStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStore.swift; sourceTree = "<group>"; };
 		A774AC6AED18050262B723D3 /* TrafficRateCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficRateCalculator.swift; sourceTree = "<group>"; };
 		B3385F0E0B65BAECD26C9B42 /* UsageLedgerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageLedgerTests.swift; sourceTree = "<group>"; };
+		BEBE037F349A21B7061283DB /* UsageCSVExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageCSVExporterTests.swift; sourceTree = "<group>"; };
 		C7F1641F7387CDA245271BAC /* TrafficDeltaCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficDeltaCalculatorTests.swift; sourceTree = "<group>"; };
 		DF3BE9B119B3002CAE2B2FC8 /* UsageStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageStoreTests.swift; sourceTree = "<group>"; };
 		E518247751AF7424CFC915B2 /* MenuBarFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarFormatterTests.swift; sourceTree = "<group>"; };
@@ -153,6 +159,7 @@
 				7E458764E6CABD826117ECE1 /* PreferencesStore.swift */,
 				808E25C819152BFD8DB76B61 /* TrafficDeltaCalculator.swift */,
 				A774AC6AED18050262B723D3 /* TrafficRateCalculator.swift */,
+				254B729A7EA2194EEF770D79 /* UsageCSVExporter.swift */,
 				3AB6ACE7245F30542AD9D734 /* UsageLedger.swift */,
 				A35963028476ECBA22D43229 /* UsageStore.swift */,
 			);
@@ -192,6 +199,7 @@
 				49086A904542B81AA78C8D55 /* SpeedFormatterTests.swift */,
 				C7F1641F7387CDA245271BAC /* TrafficDeltaCalculatorTests.swift */,
 				6614D429C39724EE86903CE9 /* TrafficRateCalculatorTests.swift */,
+				BEBE037F349A21B7061283DB /* UsageCSVExporterTests.swift */,
 				B3385F0E0B65BAECD26C9B42 /* UsageLedgerTests.swift */,
 				DF3BE9B119B3002CAE2B2FC8 /* UsageStoreTests.swift */,
 			);
@@ -208,6 +216,7 @@
 				0B06395C705207BF66B84A39 /* NetMeterApp.swift */,
 				2877E5DBB200909F88D625A5 /* NetworkMonitor.swift */,
 				94A7811B4F46291D873BD0C6 /* SettingsView.swift */,
+				2073C952D9862C51969997DC /* UsageCSVDocument.swift */,
 				2A73BEDA2D60400415B0F67F /* UsageStatisticsView.swift */,
 			);
 			name = NetMeterApp;
@@ -339,6 +348,7 @@
 				CF6F4C3ED3CEC4120029104A /* PreferencesStore.swift in Sources */,
 				060F7C6D196CB3A24804642A /* TrafficDeltaCalculator.swift in Sources */,
 				9B5824C24C81B022904023CD /* TrafficRateCalculator.swift in Sources */,
+				E9092F19DB4FC94EC509381D /* UsageCSVExporter.swift in Sources */,
 				CCD3A45340EE608D83876F65 /* UsageLedger.swift in Sources */,
 				4EB0F97EA33A8E2387BC9C0F /* UsageStore.swift in Sources */,
 			);
@@ -356,6 +366,7 @@
 				90E44FF324A2273F70790EEF /* SpeedFormatterTests.swift in Sources */,
 				146E2A5AD0BC6117F3B801D9 /* TrafficDeltaCalculatorTests.swift in Sources */,
 				C0E1DFBA877A2165F5AE949C /* TrafficRateCalculatorTests.swift in Sources */,
+				CC762300926E2A87159420BA /* UsageCSVExporterTests.swift in Sources */,
 				D6F3BB84C51C87142A029016 /* UsageLedgerTests.swift in Sources */,
 				69AD961D5DB420A5FE48F90D /* UsageStoreTests.swift in Sources */,
 			);
@@ -371,6 +382,7 @@
 				CFF8CB85117A8CB7E3FE4053 /* NetMeterApp.swift in Sources */,
 				150D5A7072CADDAEDC0F906C /* NetworkMonitor.swift in Sources */,
 				443B3EE24CB27CAE3D6C220C /* SettingsView.swift in Sources */,
+				D974FA88BC97AE7166D77BC0 /* UsageCSVDocument.swift in Sources */,
 				40EC7D2915BB24CFE9D1D674 /* UsageStatisticsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
