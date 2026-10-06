@@ -16,6 +16,9 @@ struct SettingsView: View {
             menuBarTab
                 .tabItem { Label("Menu Bar", systemImage: "menubar.rectangle") }
                 .tag(SettingsTab.menuBar)
+            fontStyleTab
+                .tabItem { Label("Font Style", systemImage: "textformat") }
+                .tag(SettingsTab.fontStyle)
             usageTab
                 .tabItem { Label("Usage", systemImage: "chart.bar") }
                 .tag(SettingsTab.usage)
@@ -90,6 +93,11 @@ struct SettingsView: View {
 
     private var menuBarTab: some View {
         Form {
+            Section("Font Style") {
+                Button("Edit download and upload font style…") {
+                    model.settingsTab = .fontStyle
+                }
+            }
             Section("Visible metrics") {
                 Text("Choose up to three metrics. Drag a row to change their order.")
                     .font(.caption)
@@ -142,35 +150,56 @@ struct SettingsView: View {
                 }
                 Toggle("Show units", isOn: $model.configuration.showUnits)
             }
-            Section("Menu bar font") {
-                Picker("Size", selection: $model.configuration.menuBarFontSize) {
+        }
+        .formStyle(.grouped)
+    }
+
+    private var fontStyleTab: some View {
+        Form {
+            Section("Menu bar speed fonts") {
+                Picker("Download font style", selection: $model.configuration.downloadFontWeight) {
+                    ForEach(MenuBarFontWeight.allCases, id: \.self) { style in
+                        Text(style.title).tag(style)
+                    }
+                }
+                Picker("Upload font style", selection: $model.configuration.uploadFontWeight) {
+                    ForEach(MenuBarFontWeight.allCases, id: \.self) { style in
+                        Text(style.title).tag(style)
+                    }
+                }
+                Picker("Font size", selection: $model.configuration.menuBarFontSize) {
                     ForEach(10...14, id: \.self) { size in
                         Text("\(size) pt").tag(size)
                     }
                 }
-                Picker("Download weight", selection: $model.configuration.downloadFontWeight) {
-                    ForEach(MenuBarFontWeight.allCases, id: \.self) { weight in
-                        Text(weight.title).tag(weight)
-                    }
-                }
-                Picker("Upload weight", selection: $model.configuration.uploadFontWeight) {
-                    ForEach(MenuBarFontWeight.allCases, id: \.self) { weight in
-                        Text(weight.title).tag(weight)
-                    }
-                }
+                Text("Changes appear immediately in the menu bar. Fixed spacing keeps each speed in place.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section("Preview") {
                 HStack {
-                    Text("Preview")
+                    Text("Download and upload")
                     Spacer()
-                    Image(nsImage: FixedMeterImage.make(
-                        title: model.compactMenuTitle,
-                        columns: model.compactMenuColumns,
-                        configuration: model.configuration
-                    ))
-                    .accessibilityLabel(model.menuTitle)
+                    Image(nsImage: fontPreviewImage)
+                        .accessibilityLabel("Download and upload font preview")
                 }
             }
         }
         .formStyle(.grouped)
+    }
+
+    private var fontPreviewImage: NSImage {
+        var configuration = model.configuration
+        configuration.enabled = [.downloadSpeed, .uploadSpeed]
+        configuration.order = Metric.allCases
+        let columns = MenuBarFormatter.columns(
+            downloadBytesPerSecond: 123_456,
+            uploadBytesPerSecond: 45_678,
+            totalDownloaded: 0,
+            totalUploaded: 0,
+            configuration: configuration
+        )
+        return FixedMeterImage.make(title: "", columns: columns, configuration: configuration)
     }
 
     private var usageTab: some View {

@@ -6,6 +6,7 @@ import ServiceManagement
 enum SettingsTab: Hashable {
     case general
     case menuBar
+    case fontStyle
     case usage
     case statistics
     case advanced

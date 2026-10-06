@@ -41,6 +41,11 @@ struct MenuBarView: View {
                     NSApp.activate(ignoringOtherApps: true)
                     openSettings()
                 }
+                action("Font Style…", systemImage: "textformat") {
+                    model.settingsTab = .fontStyle
+                    NSApp.activate(ignoringOtherApps: true)
+                    openSettings()
+                }
                 action(model.isMonitoring ? "Pause Monitoring" : "Resume Monitoring", systemImage: model.isMonitoring ? "pause" : "play") {
                     model.toggleMonitoring()
                 }
