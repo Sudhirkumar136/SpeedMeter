@@ -14,13 +14,6 @@ enum FixedMeterImage {
         let size = NSSize(width: width, height: height)
 
         let image = NSImage(size: size, flipped: false) { bounds in
-            let outline = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 4, yRadius: 4)
-            NSColor.labelColor.withAlphaComponent(0.08).setFill()
-            outline.fill()
-            NSColor.labelColor.withAlphaComponent(0.16).setStroke()
-            outline.lineWidth = 1
-            outline.stroke()
-
             let attributes: [NSAttributedString.Key: Any] = [
                 .font: font,
                 .foregroundColor: NSColor.labelColor
