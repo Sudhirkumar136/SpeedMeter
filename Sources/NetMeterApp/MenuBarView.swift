@@ -42,11 +42,6 @@ struct MenuBarView: View {
                 action("Reset Session Statistics", systemImage: "arrow.counterclockwise") {
                     confirmResetSession = true
                 }
-                action("About NetMeter", systemImage: "info.circle") {
-                    model.settingsTab = .about
-                    NSApp.activate(ignoringOtherApps: true)
-                    openSettings()
-                }
                 action("Quit NetMeter", systemImage: "power") {
                     model.quit()
                 }

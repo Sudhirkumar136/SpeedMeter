@@ -33,7 +33,7 @@ Open [NetMeter.xcodeproj](NetMeter.xcodeproj) in Xcode and select the `NetMeter`
 
 The Release app appears at `dist/NetMeter.app`, which links to a signed build under `~/Library/Application Support/NetMeter/Builds`. The build script keeps the signed bundle outside synced Documents folders because file-provider metadata can invalidate a local code signature. The install script copies it into `/Applications/NetMeter.app` and verifies the signature. If your account cannot write to `/Applications`, run the install script with `sudo`.
 
-Launch NetMeter from Finder → Applications. It has no Dock icon; click its speed label in the menu bar for the dashboard, Settings, pause, reset, About, and Quit actions. Font Style and Usage Statistics are tabs in Settings.
+Launch NetMeter from Finder → Applications. It has no Dock icon; click its speed label in the menu bar for the dashboard, Settings, pause, reset, and Quit actions. Font Style, Usage Statistics, and About are tabs in Settings.
 
 To run unit tests:
 
