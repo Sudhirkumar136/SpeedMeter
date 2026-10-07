@@ -14,6 +14,20 @@ NetMeter is a native macOS menu bar app that shows live download and upload spee
 
 NetMeter uses SwiftUI, AppKit, Apple's Charts and ServiceManagement frameworks, and system interface counters. It does not run internet speed tests or use third-party runtime packages. Network usage remains stored on your Mac.
 
+## Screenshots
+
+| Menu Bar settings | Font Style settings |
+| --- | --- |
+| <img src="docs/screenshots/menu-bar.png" alt="Menu Bar settings with metric and appearance controls" width="380"> | <img src="docs/screenshots/font-style.png" alt="Font Style settings with separate download and upload font controls" width="380"> |
+| Choose up to three metrics, reorder them, and set units and precision. | Adjust download and upload fonts independently with a live preview. |
+
+| General settings | Usage settings |
+| --- | --- |
+| <img src="docs/screenshots/general.png" alt="General settings with startup and update interval controls" width="380"> | <img src="docs/screenshots/usage.png" alt="Usage settings with tracking and retention controls" width="380"> |
+| Start at login and choose how often the speeds refresh. | Track daily usage, choose retention, or reset saved totals. |
+
+The Statistics tab adds daily totals, a 14-day chart, and **Export CSV…** for all retained days.
+
 ## Requirements
 
 - macOS 15 or later
