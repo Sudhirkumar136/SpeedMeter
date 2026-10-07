@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NetMeter — Network Speed Meter for the macOS Menu Bar</title>
+  <meta name="description" content="NetMeter is a native macOS menu bar network speed meter. See live download and upload speeds, track daily data usage, and export usage statistics to CSV.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://sudhirkumar136.github.io/SpeedMeter/">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="sitemap" type="application/xml" href="sitemap.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="NetMeter — Network Speed Meter for macOS">
+  <meta property="og:description" content="Live download and upload speeds in your Mac menu bar, with local daily usage statistics.">
+  <meta property="og:url" content="https://sudhirkumar136.github.io/SpeedMeter/">
+  <meta property="og:image" content="https://sudhirkumar136.github.io/SpeedMeter/screenshots/menu-bar.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f4f8fa">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "NetMeter",
+    "description": "A native macOS menu bar network speed meter with live download and upload speeds, daily data usage statistics, and CSV export.",
+    "url": "https://sudhirkumar136.github.io/SpeedMeter/",
+    "downloadUrl": "https://github.com/Sudhirkumar136/SpeedMeter/releases/download/v1.1.3/NetMeter-1.1.3-macOS-unnotarized.zip",
+    "softwareVersion": "1.1.3",
+    "operatingSystem": "macOS 15 or later",
+    "applicationCategory": "UtilitiesApplication",
+    "image": "https://sudhirkumar136.github.io/SpeedMeter/screenshots/menu-bar.png",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --canvas: #f4f8fa;
+      --paper: #ffffff;
+      --ink: #173247;
+      --muted: #506676;
+      --line: #cbd9e2;
+      --blue: #146392;
+      --blue-deep: #0d456a;
+      --aqua: #d8f0ee;
+      --mint: #2d8b82;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--canvas); color: var(--ink); line-height: 1.6; }
+    a { color: var(--blue-deep); }
+    a:focus-visible { outline: 3px solid var(--mint); outline-offset: 4px; border-radius: 3px; }
+    .wrap { width: min(1120px, calc(100% - 44px)); margin-inline: auto; }
+    header { border-bottom: 1px solid var(--line); background: rgba(255,255,255,.8); }
+    nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 78px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; font-size: 1.12rem; font-weight: 750; letter-spacing: -.02em; }
+    .brand img { width: 36px; height: 36px; }
+    .navlinks { display: flex; gap: 22px; align-items: center; font-size: .95rem; font-weight: 600; }
+    .navlinks a { text-decoration: none; }
+    .navlinks a:hover, footer a:hover { text-decoration: underline; }
+    main { overflow: hidden; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(370px, .9fr); align-items: center; gap: clamp(32px, 7vw, 100px); padding-block: clamp(70px, 10vw, 132px) 88px; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 680px; font-size: clamp(2.8rem, 5.3vw, 5.2rem); line-height: 1.04; letter-spacing: -.055em; margin-bottom: 28px; }
+    h2 { font-size: clamp(2rem, 3.2vw, 3.2rem); line-height: 1.13; letter-spacing: -.045em; margin-bottom: 14px; }
+    h3 { font-size: 1.14rem; line-height: 1.3; letter-spacing: -.02em; margin-bottom: 10px; }
+    .intro { color: var(--muted); font-size: 1.16rem; max-width: 590px; margin-bottom: 30px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 12px 19px; border-radius: 9px; text-decoration: none; font-weight: 700; line-height: 1.2; transition: background .15s ease, transform .15s ease; }
+    .button:hover { transform: translateY(-2px); }
+    .button.primary { background: var(--blue); color: #fff; }
+    .button.primary:hover { background: var(--blue-deep); }
+    .button.secondary { background: var(--paper); color: var(--blue-deep); border: 1px solid var(--line); }
+    .small-note { color: var(--muted); font-size: .9rem; max-width: 550px; }
+    .small-note strong { color: var(--ink); }
+    .meter-panel { position: relative; padding: 50px 30px 34px; border-radius: 22px; background: linear-gradient(150deg, #e6f1f5, #d8f0ee); box-shadow: inset 0 0 0 1px #c8e1e6; }
+    .meter-panel::before { content: ""; position: absolute; width: 250px; height: 250px; border: 1px solid rgba(20,99,146,.16); border-radius: 50%; right: -115px; top: -95px; }
+    .meter-window { position: relative; overflow: hidden; border-radius: 12px; background: #243139; color: #f8fbfc; box-shadow: 0 18px 36px rgba(23,50,71,.22); }
+    .meter-top { display: flex; align-items: center; justify-content: space-between; padding: 11px 15px; border-bottom: 1px solid #47545c; color: #c9d6dc; font-size: .83rem; }
+    .dots { display: flex; gap: 5px; }
+    .dots i { display: block; width: 7px; height: 7px; border-radius: 50%; background: #82959d; }
+    .meter-readout { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; align-items: center; padding: 22px 14px 26px; font-variant-numeric: tabular-nums; }
+    .meter-readout span { white-space: nowrap; text-align: center; font-size: clamp(.88rem, 1.5vw, 1.13rem); font-weight: 700; }
+    .meter-readout b { color: #8fdfd6; margin-right: 3px; }
+    .meter-explainer { margin: 17px 0 0; color: #365b65; font-size: .92rem; text-align: center; }
+    .rule { border-top: 1px solid var(--line); }
+    section.content { padding-block: 76px; }
+    .section-head { max-width: 710px; margin-bottom: 36px; }
+    .section-head p { color: var(--muted); font-size: 1.08rem; }
+    .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feature { padding: 26px 26px 22px; background: var(--paper); border: 1px solid var(--line); border-radius: 12px; }
+    .feature .symbol { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 9px; background: var(--aqua); color: var(--blue-deep); font-size: 1.2rem; font-weight: 750; margin-bottom: 22px; }
+    .feature p, .question p { color: var(--muted); margin-bottom: 0; }
+    .gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px; }
+    figure { margin: 0; }
+    figure img { display: block; width: 100%; height: auto; border-radius: 14px; }
+    figcaption { margin: 12px 10px 0; color: var(--muted); font-size: .95rem; }
+    figcaption strong { display: block; color: var(--ink); font-size: 1.03rem; }
+    .questions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 52px; max-width: 900px; }
+    .closing { background: #e3eff2; padding-block: 68px; border-top: 1px solid #c7dce2; }
+    .closing .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px; }
+    .closing h2 { max-width: 650px; margin-bottom: 0; }
+    footer { border-top: 1px solid var(--line); padding-block: 24px; color: var(--muted); font-size: .9rem; }
+    footer .wrap { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+    footer a { color: inherit; text-decoration: none; }
+    @media (max-width: 780px) {
+      .hero { grid-template-columns: 1fr; padding-block: 62px 56px; }
+      .meter-panel { max-width: 610px; }
+      .features { grid-template-columns: 1fr; }
+      .gallery, .questions { grid-template-columns: 1fr; }
+      .closing .wrap { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 540px) {
+      .wrap { width: min(100% - 32px, 1120px); }
+      nav { align-items: flex-start; flex-direction: column; padding-block: 17px; gap: 12px; }
+      .navlinks { gap: 17px; flex-wrap: wrap; }
+      .hero { padding-top: 45px; }
+      .meter-panel { padding: 42px 16px 24px; }
+      .meter-readout { padding-inline: 7px; }
+      .meter-readout span { font-size: .8rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .button { transition: none; }
+      .button:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="wrap" aria-label="Main navigation">
+      <a class="brand" href="#top"><img src="favicon.png" width="36" height="36" alt="">NetMeter</a>
+      <div class="navlinks">
+        <a href="#features">Features</a>
+        <a href="#screenshots">Screenshots</a>
+        <a href="https://github.com/Sudhirkumar136/SpeedMeter">Source code</a>
+      </div>
+    </nav>
+  </header>
+  <main id="top">
+    <section class="hero wrap" aria-labelledby="page-title">
+      <div>
+        <h1 id="page-title">Network speed meter for your Mac.</h1>
+        <p class="intro">NetMeter shows live download and upload speeds where you can see them at a glance. Review daily data usage, adjust the readout, and export your history to CSV.</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/Sudhirkumar136/SpeedMeter/releases/tag/v1.1.3">View preview release</a>
+          <a class="button secondary" href="https://github.com/Sudhirkumar136/SpeedMeter#build-and-install">Build from source</a>
+        </div>
+        <p class="small-note"><strong>macOS 15 or later · Apple silicon and Intel.</strong> The current preview download is not Apple notarized, so macOS may block it. Building locally is the supported way to try NetMeter now.</p>
+      </div>
+      <div class="meter-panel" aria-label="Example NetMeter menu bar readout">
+        <div class="meter-window">
+          <div class="meter-top"><span>Menu bar preview</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span></div>
+          <div class="meter-readout" aria-hidden="true"><span><b>↓</b>120.6K</span><span><b>↑</b>44.6K</span><span><b>Σ</b>1.4G</span></div>
+        </div>
+        <p class="meter-explainer">Three aligned metrics. No shifting as the numbers change.</p>
+      </div>
+    </section>
+    <div class="rule"></div>
+    <section class="content wrap" id="features" aria-labelledby="features-title">
+      <div class="section-head"><h2 id="features-title">See the traffic that matters.</h2><p>A compact macOS network monitor for current transfer rates and the data used while NetMeter is running.</p></div>
+      <div class="features">
+        <article class="feature"><span class="symbol" aria-hidden="true">↓↑</span><h3>Live upload and download</h3><p>Current rates update in the menu bar. Choose units, decimal precision, and up to three metrics.</p></article>
+        <article class="feature"><span class="symbol" aria-hidden="true">Σ</span><h3>Daily usage history</h3><p>See today, yesterday, recent days, and a 14-day chart. Export retained daily totals as CSV.</p></article>
+        <article class="feature"><span class="symbol" aria-hidden="true">Aa</span><h3>A readout that fits</h3><p>Fixed spacing keeps values in place. Set separate styles for download and upload and reorder the metrics.</p></article>
+      </div>
+    </section>
+    <div class="rule"></div>
+    <section class="content wrap" id="screenshots" aria-labelledby="screenshots-title">
+      <div class="section-head"><h2 id="screenshots-title">Make the menu bar yours.</h2><p>Real views from NetMeter’s Settings window. Statistics lives in the same window.</p></div>
+      <div class="gallery">
+        <figure><img src="screenshots/menu-bar.png" width="686" height="694" loading="lazy" alt="NetMeter Menu Bar settings showing download speed, upload speed, total data metrics, units, and precision"><figcaption><strong>Menu Bar</strong>Choose the speeds and totals you want to see.</figcaption></figure>
+        <figure><img src="screenshots/font-style.png" width="686" height="694" loading="lazy" alt="NetMeter Font Style settings with separate download and upload fonts and a live preview"><figcaption><strong>Font Style</strong>Adjust each speed’s appearance with a live preview.</figcaption></figure>
+        <figure><img src="screenshots/general.png" width="686" height="694" loading="lazy" alt="NetMeter General settings with Launch at Login and update interval controls"><figcaption><strong>General</strong>Set login startup and the refresh interval.</figcaption></figure>
+        <figure><img src="screenshots/usage.png" width="686" height="694" loading="lazy" alt="NetMeter Usage settings with daily tracking and history retention controls"><figcaption><strong>Usage</strong>Control local tracking, retention, and resets.</figcaption></figure>
+      </div>
+    </section>
+    <div class="rule"></div>
+    <section class="content wrap" aria-labelledby="questions-title">
+      <div class="section-head"><h2 id="questions-title">What NetMeter measures</h2></div>
+      <div class="questions">
+        <div class="question"><h3>Does it run an internet speed test?</h3><p>No. NetMeter reads macOS network interface counters to show current transfer rates. It does not test the maximum speed of your connection.</p></div>
+        <div class="question"><h3>Where is usage history saved?</h3><p>On your Mac, in your Library folder. NetMeter counts usage while it is running and can export retained daily totals to CSV.</p></div>
+      </div>
+    </section>
+    <section class="closing"><div class="wrap"><h2>Put live network speed in the menu bar.</h2><a class="button primary" href="https://github.com/Sudhirkumar136/SpeedMeter/releases">Explore releases</a></div></section>
+  </main>
+  <footer><div class="wrap"><span>NetMeter for macOS · Source available on GitHub</span><a href="https://github.com/Sudhirkumar136/SpeedMeter">GitHub repository</a></div></footer>
+</body>
+</html>
