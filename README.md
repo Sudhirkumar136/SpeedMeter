@@ -1,6 +1,6 @@
 # NetMeter
 
-NetMeter is a native macOS menu bar network speed meter that shows live download and upload speeds, plus how much data your Mac has used while the app is running. Click the readout for a quick dashboard; open Settings to choose what appears in the menu bar and review daily usage.
+NetMeter is a native macOS menu bar network speed meter that shows live download and upload traffic, including internet traffic, plus how much data your Mac has used while the app is running. Click the readout for a quick dashboard; open Settings to choose what appears in the menu bar and review daily usage.
 
 **[NetMeter website](https://sudhirkumar136.github.io/SpeedMeter/)** · **[Get the latest release](https://github.com/Sudhirkumar136/SpeedMeter/releases)** · **macOS 15 or later** · **Apple silicon and Intel**
 
